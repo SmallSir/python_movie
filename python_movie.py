@@ -24,10 +24,12 @@ for i in range(0,paginator):
           res2=requests.get(h2)
           res2.encoding='utf-8'
           soup2=BeautifulSoup(res2.text)
-          #获取电影名称
-          name=soup2.select('#content h1')[0].text
-          #获取该电影的评分
-          rating_num=link.select('.rating_nums')[0].text
-          print(h2,name,rating_num)
+          country_from=
+          print(country_from)
+          # #获取电影名称
+          # name=soup2.select('#content h1')[0].text
+          # #获取该电影的评分
+          # rating_num=link.select('.rating_nums')[0].text
+          # print(h2,name,rating_num)
 
 
