@@ -28,12 +28,18 @@ for i in range(0,paginator):
      for link in soup1.select('.pl2')[:20]:
           movie = {}
           #获取该电影的详情网页
-          h2=link.select('a')[0]['href']
+          try:
+               h2=link.select('a')[0]['href']
+          except IndexError:
+               continue
           res2=requests.get(h2)
           res2.encoding='utf-8'
           soup2=BeautifulSoup(res2.text, 'html.parser')
           #获得电影的发行国家/地区
-          info = soup2.select('#info')[0]
+          try:
+               info = soup2.select('#info')[0]
+          except IndexError:
+               continue
           movie_from=re.findall('(?<=制片国家/地区: ).+?(?=\n)', info.text)[0]
           #获取该电影的评分
           rating_num='0'
@@ -43,14 +49,17 @@ for i in range(0,paginator):
                continue
           if(movie_from[0]==('中' or '香' or '台')and float(rating_num)>7.0):
                #获取电影名称
-               name=soup2.select('#content h1 span')[0].text
+               try:
+                    name=soup2.select('#content h1 span')[0].text
+               except IndexError:
+                    continue
                movie['电影评分']=rating_num
                movie['电影名称']=name
                print(name,rating_num)
                movie_select.append(movie)
      time.sleep(3)
 df=pandas.DataFrame(movie_select)
-df.to_excel('2016电影高分.xlsx')
+df.to_excel('2017电影高分.xlsx')
 
 
 
