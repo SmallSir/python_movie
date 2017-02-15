@@ -2,6 +2,7 @@ import requests
 import string
 from bs4 import BeautifulSoup
 import pandas
+import xlsxwriter
 import re
 movie_select=[]
 #def getmovie(str_x):
@@ -44,7 +45,7 @@ for i in range(0,1):
                print(name,rating_num)
                movie_select.append(movie)
 df=pandas.DataFrame(movie_select)
-print(df)
+df.to_excel('电.xlsx')
 
 
 
