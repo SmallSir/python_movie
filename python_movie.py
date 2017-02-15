@@ -11,7 +11,7 @@ paginator=soup.select('.article')[0].text
 #print(paginator)
 paginator=soup.select('.paginator a')[-2].text
 paginator=int(paginator)
-movie=[]
+movie={}
 #获取该年所有的电影网页
 url='https://movie.douban.com/tag/2016?start={}&type=T'
 for i in range(0,paginator):
@@ -28,10 +28,15 @@ for i in range(0,paginator):
           #获得电影的发行国家/地区
           info = soup2.select('#info')[0]
           movie_from=re.findall('(?<=制片国家/地区: ).+?(?=\n)', info.text)[0]
-          #获取电影名称
-          name=soup2.select('#content h1')[0].text
           #获取该电影的评分
           rating_num=link.select('.rating_nums')[0].text
-          print(h2,name,rating_num)
+          if(movie_from[0]==('中' or '香' or '台')and float(rating_num)>7.0):
+               #获取电影名称
+               name=soup2.select('#content h1 span')[0].text
+               movie['名字']=name
+               movie['评分']=rating_num
+               #return movie
+
+
 
 
