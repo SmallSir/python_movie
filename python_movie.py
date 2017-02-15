@@ -2,11 +2,12 @@ import requests
 import string
 from bs4 import BeautifulSoup
 import pandas
+import time
 import xlsxwriter
 import re
 movie_select=[]
 #def getmovie(str_x):
-res=requests.get('https://movie.douban.com/tag/2016?start=0&type=T')#GET获取网站资源
+res=requests.get('https://movie.douban.com/tag/2017?start=0&type=T')#GET获取网站资源
 res.encoding='utf-8'
 soup=BeautifulSoup(res.text, 'html.parser')
 #获取一共有多少页数
@@ -16,9 +17,8 @@ paginator=soup.select('.paginator a')[-2].text
 paginator=int(paginator)
 
 #获取该年所有的电影网页
-url='https://movie.douban.com/tag/2016?start={}&type=T'
-for i in range(0,1):
-     print('搜索一页')
+url='https://movie.douban.com/tag/2017?start={}&type=T'
+for i in range(0,paginator):
      #um=int(i)
      #print('开始进行第'+(um+1)+'页搜索')
      movieurl=url.format(i*20)
@@ -36,7 +36,11 @@ for i in range(0,1):
           info = soup2.select('#info')[0]
           movie_from=re.findall('(?<=制片国家/地区: ).+?(?=\n)', info.text)[0]
           #获取该电影的评分
-          rating_num=link.select('.rating_nums')[0].text
+          rating_num='0'
+          try:
+               rating_num=link.select('.rating_nums')[0].text
+          except IndexError:
+               continue
           if(movie_from[0]==('中' or '香' or '台')and float(rating_num)>7.0):
                #获取电影名称
                name=soup2.select('#content h1 span')[0].text
@@ -44,8 +48,9 @@ for i in range(0,1):
                movie['电影名称']=name
                print(name,rating_num)
                movie_select.append(movie)
+     time.sleep(3)
 df=pandas.DataFrame(movie_select)
-df.to_excel('电.xlsx')
+df.to_excel('2016电影高分.xlsx')
 
 
 
