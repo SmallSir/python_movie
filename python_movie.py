@@ -3,11 +3,13 @@ import string
 from bs4 import BeautifulSoup
 import pandas
 import time
+import numpy as np
 import xlsxwriter
 import re
 movie_select=[]
+hds=[{'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'},{'User-Agent':'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.12 Safari/535.11'},{'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)'}]
 def getmovie(str_x):
-     res=requests.get('https://movie.douban.com/tag/'+str_x+'?start=0&type=T')#GET获取网站资源
+     res=requests.get('https://movie.douban.com/tag/'+str_x+'?start=0&type=T',headers=hds[np.random.randint(0,len(hds))])#GET获取网站资源
      res.encoding='utf-8'
      soup=BeautifulSoup(res.text, 'html.parser')
      #获取一共有多少页数
@@ -19,13 +21,15 @@ def getmovie(str_x):
      #获取该年所有的电影网页
      url='https://movie.douban.com/tag/'+str_x+'?start={}&type=T'
      for i in range(0,paginator):
+
           #um=int(i)
           #print('开始进行第'+(um+1)+'页搜索')
           movieurl=url.format(i*20)
-          res1=requests.get(movieurl)
+          res1=requests.get(movieurl,headers=hds[np.random.randint(0,len(hds))])
           res1.encoding='utf-8'
           soup1=BeautifulSoup(res1.text, 'html.parser')
           for link in soup1.select('.pl2')[:20]:
+               time.sleep(np.random.rand() * 5)
                movie = {}
                #获取该电影的详情网页
                try:
@@ -57,7 +61,6 @@ def getmovie(str_x):
                     movie['电影名称']=name
                     print(name,rating_num)
                     movie_select.append(movie)
-          time.sleep(3)
      df=pandas.DataFrame(movie_select)
      df.to_excel(str_x+'电影高分.xlsx')
 
